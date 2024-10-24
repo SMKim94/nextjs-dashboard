@@ -1,4 +1,4 @@
-import { sql } from '@vercel/postgres';
+import { sql } from '@/app/lib/database/mysql/sql';
 import {
   CustomerField,
   CustomersTableType,
