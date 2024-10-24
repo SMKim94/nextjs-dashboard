@@ -103,13 +103,13 @@ export async function fetchFilteredInvoices(
       FROM invoices
       JOIN customers ON invoices.customer_id = customers.id
       WHERE
-        customers.name ILIKE ${`%${query}%`} OR
-        customers.email ILIKE ${`%${query}%`} OR
-        invoices.amount::text ILIKE ${`%${query}%`} OR
-        invoices.date::text ILIKE ${`%${query}%`} OR
-        invoices.status ILIKE ${`%${query}%`}
+        LOWER(customers.name) LIKE LOWER('${`%${query}%`}') OR
+        LOWER(customers.email) LIKE LOWER('${`%${query}%`}') OR
+        CAST(invoices.amount AS CHAR) LIKE '${`%${query}%`}' OR
+        CAST(invoices.date AS CHAR) LIKE '${`%${query}%`}' OR
+        LOWER(invoices.status) LIKE LOWER('${`%${query}%`}')
       ORDER BY invoices.date DESC
-      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${String(offset)}
     `;
 
     return invoices.rows;
@@ -125,11 +125,11 @@ export async function fetchInvoicesPages(query: string) {
     FROM invoices
     JOIN customers ON invoices.customer_id = customers.id
     WHERE
-      customers.name ILIKE ${`%${query}%`} OR
-      customers.email ILIKE ${`%${query}%`} OR
-      invoices.amount::text ILIKE ${`%${query}%`} OR
-      invoices.date::text ILIKE ${`%${query}%`} OR
-      invoices.status ILIKE ${`%${query}%`}
+        LOWER(customers.name) LIKE LOWER('${`%${query}%`}') OR
+        LOWER(customers.email) LIKE LOWER('${`%${query}%`}') OR
+        CAST(invoices.amount AS CHAR) LIKE '${`%${query}%`}' OR
+        CAST(invoices.date AS CHAR) LIKE '${`%${query}%`}' OR
+        LOWER(invoices.status) LIKE LOWER('${`%${query}%`}')
   `;
 
     const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
